@@ -22,6 +22,7 @@ from webPage import WebPage
 from threadPool import ThreadPool
 import threading  
 import json
+from tld import get_tld
 
 log = logging.getLogger('Main.crawler')
 
@@ -107,12 +108,17 @@ class Crawler(object):
         return len(self.visitedHrefs) - self.threadPool.getTaskLeft()
 
     def _assignCurrentDepthTasks(self):
+        mylock.acquire()
+        copiedUnvisitedHrefs = deque()
         while self.unvisitedHrefs:
-            url = self.unvisitedHrefs.popleft()
-            #向任务队列分配任务
-            self.threadPool.putTask(self._taskHandler, url) 
+            copiedUnvisitedHrefs.append(self.unvisitedHrefs.popleft())
+        mylock.release()
+        while copiedUnvisitedHrefs:
+            url = copiedUnvisitedHrefs.popleft()
             #标注该链接已被访问,或即将被访问,防止重复访问相同链接
-            self.visitedHrefs.add(url)  
+            self.visitedHrefs.add(url)
+            #向任务队列分配任务
+            self.threadPool.putTask(self._taskHandler, url)
  
     def _taskHandler(self, url):
         #先拿网页源码，再保存,两个都是高阻塞的操作，交给线程处理
@@ -125,27 +131,51 @@ class Crawler(object):
 
     def _saveTaskResults(self, webPage):
         url, pageSource = webPage.getDatas()
-        try:
-            if self.keyword:
-                #使用正则的不区分大小写search比使用lower()后再查找要高效率(?)
-                if re.search(self.keyword, pageSource, re.I):
-                    self.database.saveData(url, pageSource, self.keyword)
-            else:
-                self.database.saveData(url, pageSource)
-        except Exception, e:
-            log.error(' URL: %s ' % url + traceback.format_exc())
+        soup = BeautifulSoup(pageSource)
+        image_tags = soup.find_all('img', src=True)
+        log.error('pageSource %s' %pageSource)
+        for image_tag in image_tags:
+            log.error('image_tag %s' %image_tag.contents)
+            image_tag_parent = image_tag.find_parent('a')
+            if not image_tag_parent == None:
+                targetURL = image_tag_parent.get('href').encode('utf8')
+                if not targetURL.startswith('http'):
+                    targetURL = urljoin(url, targetURL)#处理相对链接的问题
+                adsURL = image_tag.get('src').encode('utf8') 
+                if not adsURL.startswith('http'):
+                    adsURL = urljoin(url, adsURL)#处理相对链接的问题
+                print "We got an ads"
+                print "adsURL %s" %adsURL
+                print "targetURL %s" %targetURL
+                print "referURL %s" %url
+                log.error("adsURL %s" %adsURL)
+                log.error("targetURL %s" %targetURL)
+                log.error("referURL %s" %url)
+            try:
+                self.database.saveData(adsURL, targetURL, url)
+            except Exception, e:
+                 log.error(' URL: %s ' % url + traceback.format_exc())
 
     def _saveTaskResultsForSelfTest(self, url, pageSource):
-        try:
-            if self.keyword:
-                #使用正则的不区分大小写search比使用lower()后再查找要高效率(?)
-                if re.search(self.keyword, pageSource, re.I):
-                    self.database.saveData(url, pageSource, self.keyword)
-            else:
-                self.database.saveData(url, pageSource)
-        except Exception, e:
-            log.error(' URL: %s ' % url + traceback.format_exc())
-
+        soup = BeautifulSoup(pageSource)
+        image_tags = soup.find_all('img', src=True)
+        for image_tag in image_tags:
+            image_tag_parent = image_tag.find_parent('a')
+            if not image_tag_parent == None:
+                targetURL = image_tag_parent.get('href').encode('utf8')
+                if not targetURL.startswith('http'):
+                    targetURL = urljoin(url, targetURL)#处理相对链接的问题
+                adsURL = image_tag.get('src').encode('utf8') 
+                if not adsURL.startswith('http'):
+                    adsURL = urljoin(url, adsURL)#处理相对链接的问题
+                print "We got an ads"
+                print "adsURL %s" %adsURL
+                print "targetURL %s" %targetURL
+                print "referURL %s" %url
+            try:
+                self.database.saveData(adsURL, targetURL, url)
+            except Exception, e:
+                 log.error(' URL: %s ' % url + traceback.format_exc())
     def _addUnvisitedHrefs(self, webPage):
         '''添加未访问的链接。将有效的url放进UnvisitedHrefs列表'''
         #对链接进行过滤:1.只获取http或https网页;2.保证每个链接只访问一次

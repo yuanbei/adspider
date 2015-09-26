@@ -14,10 +14,10 @@ class Database(object):
         try:
             self.conn = sqlite3.connect(dbFile, isolation_level=None, check_same_thread = False) #让它自动commit，效率也有所提升. 多线程共用
             self.conn.execute('''CREATE TABLE IF NOT EXISTS
-                            Webpage (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                            url TEXT, 
-                            pageSource TEXT,
-                            keyword TEXT)''')
+                            AdsProfile (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                            adsURL TEXT, 
+                            adsTargetURL TEXT,
+                            referURL TEXT)''')
         except Exception, e:
             self.conn = None
 
@@ -27,10 +27,10 @@ class Database(object):
         else:
             return False
 
-    def saveData(self, url, pageSource, keyword=''):
+    def saveData(self, adsURL, adsTargetURL, referURL):
         if self.conn:
-            sql='''INSERT INTO Webpage (url, pageSource, keyword) VALUES (?, ?, ?);'''
-            self.conn.execute(sql, (url, pageSource, keyword) )
+            sql='''INSERT INTO AdsProfile (adsURL, adsTargetURL, referURL) VALUES (?, ?, ?);'''
+            self.conn.execute(sql, (adsURL, adsTargetURL, referURL) )
         else :
             raise sqlite3.OperationalError,'Database is not connected. Can not save Data!'
 
