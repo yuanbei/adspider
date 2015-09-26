@@ -1,6 +1,5 @@
-requirements
-
-1. tld[https://pypi.python.org/pypi/tld]
+###Requirements
+1. [tld](https://pypi.python.org/pypi/tld)
 
 ### AdsCrawler
 A crawler which crawls and analyzes ads in the web page. Once we find the ads,
@@ -12,6 +11,6 @@ We can generate ABP filters automatic.
 3. Generate ABP filters  from ads image profile.
 
 #Ads Profile Table
-|---------------------------------------------------------------------|
-|record id (primary key)| ads URL  | ads Target URL  | refer URL      |
-|---------------------------------------------------------------------|
+|---------------------------------------------------------------------|         
+|record id (primary key)| ads URL  | ads Target URL  | refer URL      |         
+|---------------------------------------------------------------------|         
