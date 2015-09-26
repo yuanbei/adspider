@@ -1,4 +1,4 @@
-###Requirements
+### Requirements
 1. [tld](https://pypi.python.org/pypi/tld)
 
 ### AdsCrawler
@@ -10,7 +10,7 @@ We can generate ABP filters automatic.
 2. Analyze the profiles and find the images which are probably ads.
 3. Generate ABP filters  from ads image profile.
 
-#Ads Profile Table
-|---------------------------------------------------------------------|         
-|record id (primary key)| ads URL  | ads Target URL  | refer URL      |         
-|---------------------------------------------------------------------|         
+###Ads Profile Table
+|----------------------------------------------------------------------------------------------------|         
+|record id (primary key)| ads URL             | ads Target URL         | refer URL                   |         
+|----------------------------------------------------------------------------------------------------|         
