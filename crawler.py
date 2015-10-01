@@ -148,6 +148,9 @@ class Crawler(object):
                 print "adsURL %s" %adsURL
                 print "targetURL %s" %targetURL
                 print "referURL %s" %url
+                print get_tld(adsURL)
+                print get_tld(targetURL)
+                print get_tld(url)
                 log.error("adsURL %s" %adsURL)
                 log.error("targetURL %s" %targetURL)
                 log.error("referURL %s" %url)
@@ -172,6 +175,9 @@ class Crawler(object):
                 print "adsURL %s" %adsURL
                 print "targetURL %s" %targetURL
                 print "referURL %s" %url
+                print get_tld(adsURL)
+                print get_tld(targetURL)
+                print get_tld(url)
             try:
                 self.database.saveData(adsURL, targetURL, url)
             except Exception, e:

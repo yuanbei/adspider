@@ -7,7 +7,7 @@ from threading import Thread
 
 from crawler import Crawler
 from options import parser
-
+from tld.utils import update_tld_names
 
 def congifLogger(logFile, logLevel):
     '''配置logging的日志文件以及日志的记录等级'''
@@ -62,6 +62,7 @@ class PrintProgress(Thread):
 
 def main():
     args = parser.parse_args()
+    update_tld_names()
     if not congifLogger(args.logFile, args.logLevel):
         print '\nPermission denied: %s' % args.logFile
         print 'Please make sure you have the permission to save the log file!\n'
