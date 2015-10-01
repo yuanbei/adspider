@@ -7,6 +7,6 @@
 5. When user click the image, it will go to the ads page. 
 6. Some ads is maintained by the website itself.
 
-### There are two relationship between image and webpage.
-1. Webpage referers some images from third party.
-2. The image is referered by other webpage. 
+### There are two relationship between image and web page.
+1. Web page refer some images from third party.
+2. The image is refer by other web page. 
