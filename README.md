@@ -7,9 +7,11 @@ We can generate ABP filters automatic.
 
 ### Common Ads model
 A lot of ads have the model of the below.
+'
 <a href ="ads Target URL">
   <img src = "ads URL" />
 </a>
+'
 The refer URL is the URL of page which hosts the ads.
 
 ### How to find the image ads in internet.
