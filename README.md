@@ -1,11 +1,8 @@
-### Requirements
-1. [tld](https://pypi.python.org/pypi/tld)
+### AdSpider
+A spider which crawls and analyzes ads in the web page. Once we find the ads,
+we can generate [ABP](https://adblockplus.org/) filters automatic.
 
-### AdsCrawler
-A crawler which crawls and analyzes ads in the web page. Once we find the ads,
-We can generate ABP filters automatic.
-
-### Common Ads model
+### Ads present model
 A lot of ads have the model of the below.
 ```html
 <a href ="ads Target URL">
@@ -25,3 +22,9 @@ The refer URL is the URL of page which hosts the ads.
 |record id (primary key)| ads URL             | ads Target URL         | refer URL                   |         
 |----------------------------------------------------------------------------------------------------|         
 ```
+
+### Requirements
+1. [tld](https://pypi.python.org/pypi/tld)
+2. [scrapy](https://github.com/scrapy/scrapy)
+3. [lxml](http://lxml.de/)
+
