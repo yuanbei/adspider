@@ -1,0 +1,2 @@
+_root = git:https://github.com/google/
+mysql_tools = mysql-tools  git:02d18542735a528c4a6cca951207393383266bb9
