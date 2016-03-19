@@ -6,22 +6,15 @@ we can generate [ABP](https://adblockplus.org/) filters automatic.
 A lot of ads have the model of the below.
 ```html
 <a href ="ads Target URL">
-  <img src = "ads URL" />
+  <img src = "ads content URL" />
 </a>
 ```
-The refer URL is the URL of page which hosts the ads.
+The host URL is the URL of page which hosts the ads.
 
 ### How to find the image ads in internet.
-1. Crawl the web and profile the image objects into database.
-2. Analyze the profiles and find the images which are probably ads.
-3. Generate ABP filters  from ads image profile.
-
-### Ads Profile Table
-```html
-|----------------------------------------------------------------------------------------------------|         
-|record id (primary key)| ads URL             | ads Target URL         | refer URL                   |         
-|----------------------------------------------------------------------------------------------------|         
-```
+1. Crawl the web and record the ads profile item into database.
+2. Analyze the profiles and find the items which are probably ads.
+3. Generate ABP filters from ads profile item.
 
 ### Requirements
 1. [tld](https://pypi.python.org/pypi/tld)
