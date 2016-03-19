@@ -27,4 +27,6 @@ The refer URL is the URL of page which hosts the ads.
 1. [tld](https://pypi.python.org/pypi/tld)
 2. [scrapy](https://github.com/scrapy/scrapy)
 3. [lxml](http://lxml.de/)
+4. [python-gflags]()
+5. [mysql-python]()
 

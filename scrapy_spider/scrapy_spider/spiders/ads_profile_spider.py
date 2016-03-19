@@ -38,6 +38,10 @@ class AdsProfileSpider(scrapy.Spider):
             ads_profile["ads_target_url"] = link_href
             img_src = response.urljoin(ads_link.xpath('img/@src').extract_first())
             ads_profile["ads_content_url"] = img_src
+            ads_profile['ads_host_domain'] = get_tld(response.url,
+                                                     as_object=True).domain
+            ads_profile['ads_target_domain'] = get_tld(link_href,
+                                                       as_object=True).domain
             yield ads_profile
 
         link_extractor = LinkExtractor()
