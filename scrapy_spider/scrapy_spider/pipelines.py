@@ -40,7 +40,8 @@ CREATE_ADS_PROFILE_TABLE_SQLITE = '''CREATE TABLE IF NOT EXISTS AdsProfile (
                                   ads_present_mode TEXT,
                                   ads_host TEXT,
                                   ads_target_domain TEXT,
-                                  ads_host_domain TEXT)'''
+                                  ads_host_domain TEXT)
+                                  '''
 CREATE_ADS_PROFILE_TABLE_MYSQL = '''create table if not exists AdsProfile (
                                   id int(16) not null primary key auto_increment,
                                   ads_target_url text,
@@ -48,7 +49,30 @@ CREATE_ADS_PROFILE_TABLE_MYSQL = '''create table if not exists AdsProfile (
                                   ads_present_mode text,
                                   ads_host text,
                                   ads_target_domain text,
-                                  ads_host_domain text)'''
+                                  ads_host_domain text)
+                                  default charset utf8 collate utf8_unicode_ci
+                                  '''
+CREATE_ADS_REFER_GRAPH_MYSQL = '''create table if not exists AdsReferGraph (
+                                  id int(16) not null primary key auto_increment,
+                                  ads_host_domain text,
+                                  ads_target_domain text,
+                                  refer_count int(16))
+                                  default charset utf8 collate utf8_unicode_ci
+                                  '''
+CREATE_TRIGGER_MYSQL = '''
+                          drop trigger if exists update_adsrefergraph;
+                          create trigger update_adsrefergraph after insert
+                          on AdsProfile
+                          FOR EACH ROW
+                          begin
+                          set @count = (select count(*) from AdsReferGraph where ads_target_domain = new.ads_target_domain and ads_host_domain = new.ads_host_domain);
+                          if @count = 0 then
+                          insert into AdsReferGraph(ads_host_domain,ads_target_domain,refer_count) values(new.ads_host_domain,new.ads_target_domain,1);
+                          elseif @count>0 then
+                          update AdsReferGraph set refer_count = refer_count+1 where ads_target_domain = new.ads_target_domain and ads_host_domain = new.ads_host_domain;
+                          end if;
+                          end
+                          '''
 
 
 class SQLiteStorePipeline(object):
@@ -116,12 +140,20 @@ class MySQLStorePipeline(object):
     def initialize(self):
         self.conn = db.Connect(self.dbspec)
         if self.conn is not None:
-            self.create_table()
+            self.create_ads_profile_table()
+            self.create_ads_refer_graph_table()
+            self.create_update_refer_graph_trigger()
 
     def finalize(self):
         if self.conn is not None:
             self.conn.Close()
             self.conn = None
 
-    def create_table(self):
+    def create_ads_profile_table(self):
         self.conn.Execute(CREATE_ADS_PROFILE_TABLE_MYSQL)
+
+    def create_ads_refer_graph_table(self):
+        self.conn.Execute(CREATE_ADS_REFER_GRAPH_MYSQL)
+
+    def create_update_refer_graph_trigger(self):
+        self.conn.Execute(CREATE_TRIGGER_MYSQL)

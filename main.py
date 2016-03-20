@@ -5,6 +5,8 @@ import os
 import subprocess
 import sys
 
+from tld.utils import update_tld_names
+
 
 def ensure_dependencies():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -35,6 +37,7 @@ def start_spider():
 
 def main():
     ensure_dependencies()
+    update_tld_names()
     start_spider()
 
 

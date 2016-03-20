@@ -11,7 +11,7 @@ A lot of ads have the model of the below.
 ```
 The host URL is the URL of page which hosts the ads.
 
-### How to find the image ads in internet.
+### How to find the ads.
 1. Crawl the web and record the ads profile item into database.
 2. Analyze the profiles and find the items which are probably ads.
 3. Generate ABP filters from ads profile item.
@@ -22,4 +22,5 @@ The host URL is the URL of page which hosts the ads.
 3. [lxml](http://lxml.de/)
 4. [python-gflags]()
 5. [mysql-python]()
+
 

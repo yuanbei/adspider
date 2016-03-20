@@ -90,3 +90,4 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 MYSQL_DBSPEC = 'localhost:adspider:123456:adspider'
+LOG_LEVEL = 'INFO'
