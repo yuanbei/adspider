@@ -11,7 +11,7 @@ class AdsProfileSpider(scrapy.Spider):
     name = "AdsProfileSpider"
     allowed_domains = []
     start_urls = (
-        'http://www.uc123.com/',
+        'http://www.baidu.com/',
     )
 
     def _from_same_site(self, ads_host, ads_target):

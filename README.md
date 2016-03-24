@@ -17,10 +17,11 @@ The host URL is the URL of page which hosts the ads.
 3. Generate ABP filters from ads profile item.
 
 ### Requirements
+0. [python 2.7]()
 1. [tld](https://pypi.python.org/pypi/tld)
 2. [scrapy](https://github.com/scrapy/scrapy)
-3. [lxml](http://lxml.de/)
-4. [python-gflags]()
-5. [mysql-python]()
-
+3. [google mysql-tools]()
+4. [lxml](http://lxml.de/)
+5. [python-gflags]()
+6. [mysql-python]()
 
