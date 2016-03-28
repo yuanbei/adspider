@@ -1,9 +1,9 @@
 ### AdSpider
-A spider which crawls and analyzes ads in the web page. Once we find the ads,
-we can generate [ABP](https://adblockplus.org/) filters automatic.
+A spider which crawls and analyzes ads in the web page. Our main objective is 
+generating [ABP](https://adblockplus.org/) filters automatic.
 
 ### Ads present model
-A lot of ads have the model of the below.
+A lot of ads are presented with the model of below.
 ```html
 <a href ="ads Target URL">
   <img src = "ads content URL" />
@@ -11,17 +11,39 @@ A lot of ads have the model of the below.
 ```
 The host URL is the URL of page which hosts the ads.
 
-### How to find the ads.
-1. Crawl the web and record the ads profile item into database.
-2. Analyze the profiles and find the items which are probably ads.
-3. Generate ABP filters from ads profile item.
+### Core logics of AdSpider
+0. Based on Ads present model, crawl the web and record the ads profile item into database.
+1. Analyze the profiles and find the items which are probably ads.
+2. Generate ABP filters from ads profile item.
 
-### Requirements
-0. [python 2.7]()
+### Common Requirements
+0. [python 2.7](https://www.python.org/)
 1. [tld](https://pypi.python.org/pypi/tld)
-2. [scrapy](https://github.com/scrapy/scrapy)
-3. [google mysql-tools]()
-4. [lxml](http://lxml.de/)
-5. [python-gflags]()
-6. [mysql-python]()
+2. [lxml](http://lxml.de/)
 
+### Requirements for MySQL tools
+0. [MySQL-python]()
+1. [python-gflags](https://github.com/google/python-gflags)
+2. [google mysql-tools](https://github.com/google/mysql-tools)
+
+### Requirements for Spider
+1. [scrapy](https://github.com/scrapy/scrapy)
+2. [frontera](https://github.com/scrapinghub/frontera)
+
+### Installation Guide
+0. [Python 2.7](https://www.python.org/)
+1. [pip](www.pip-installer.org/en/latest/installing.html) and [setuptools](https://pypi.python.org/pypi/setuptools) Python packages. Nowadays pip requires and installs setuptools if not installed.
+2. Install tld through pip
+  ```
+  $ pip install tld
+  ```
+3. Install [lxml for python](http://lxml.de/installation.html)
+  ```
+  $ pip install lxml
+  ```
+4. Install MySQL-python through yum
+  ```
+  $ yum install MySQL-python
+  ```
+
+### Deployment

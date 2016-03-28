@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import io
+import random
 import scrapy
 
 from scrapy.linkextractors import LinkExtractor
@@ -10,9 +12,27 @@ from urlparse import urljoin, urlparse
 class AdsProfileSpider(scrapy.Spider):
     name = "AdsProfileSpider"
     allowed_domains = []
-    start_urls = (
-        'http://www.baidu.com/',
-    )
+
+    def __init__(self, *args, **kwargs):
+        super(AdsProfileSpider, self).__init__(*args, **kwargs)
+        self.user_agents = None
+
+    def _read_user_agents(self):
+        if self.user_agents is None:
+            with io.open(self.user_agent_list_file) as file_handle:
+                self.user_agents = file_handle.readlines()
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(AdsProfileSpider, cls).from_crawler(crawler, *args, **kwargs)
+        spider.user_agent_list_file = crawler.settings.get(
+            'USER_AGENT_LIST_FILE')
+        return spider
+
+    def set_crawler(self, crawler):
+        super(AdsProfileSpider, self).set_crawler(crawler)
+        spider.user_agent_list_file = crawler.settings.get(
+            'USER_AGENT_LIST_FILE')
 
     def _from_same_site(self, ads_host, ads_target):
         if ads_target is None:
@@ -24,6 +44,7 @@ class AdsProfileSpider(scrapy.Spider):
         return True if ads_host_domain == ads_target_domain else False
 
     def parse(self, response):
+        self._read_user_agents()
         if response.status != 200 or response.body == '':
             return
         ads_links = response.xpath('//a[img]')
@@ -47,4 +68,8 @@ class AdsProfileSpider(scrapy.Spider):
         link_extractor = LinkExtractor()
         all_links = link_extractor.extract_links(response)
         for link in all_links:
-            yield scrapy.Request(response.urljoin(link.url), callback=self.parse)
+            request = scrapy.Request(response.urljoin(link.url),
+                                     callback=self.parse)
+            request.headers.setdefault('User-Agent',
+                                       random.choice(self.user_agents))
+            yield request
