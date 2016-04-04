@@ -27,8 +27,8 @@ The host URL is the URL of page which hosts the ads.
 2. [google mysql-tools](https://github.com/google/mysql-tools)
 
 ### Requirements for Spider
-1. [scrapy](https://github.com/scrapy/scrapy)
-2. [frontera](https://github.com/scrapinghub/frontera)
+1. [Scrapy](https://github.com/scrapy/scrapy)
+2. [Frontera](https://github.com/scrapinghub/frontera)
 
 ### Installation Guide
 0. [Python 2.7](https://www.python.org/)
@@ -45,5 +45,20 @@ The host URL is the URL of page which hosts the ads.
   ```
   $ yum install MySQL-python
   ```
-
+5. Install python-gflags
+  ```
+  $ pip install python-gflags
+  ```
+6. Intsall Scrapy
+  ```
+  $ pip install scrapy
+  ```
+   
+7. Install Frontera
+  ```
+  $ pip install frontera[distributed,zeromq,sql]
+  ```
+  
 ### Deployment
+Thanks for [ScarpyHub](http://scrapinghub.com/), AdSpider integrate [Scrapy](https://github.com/scrapy/scrapy) with [Frontera](https://github.com/scrapinghub/frontera) to achieve a broad
+distributed Spdier.
