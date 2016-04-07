@@ -9,7 +9,7 @@ SPIDER_LOG_PARTITIONS = 1
 # Url storage
 # --------------------------------------------------------
 
-BACKEND = 'frontera.contrib.backends.sqlalchemy.RANDOM'
+BACKEND = 'frontera.contrib.backends.sqlalchemy.FIFO'
 # BACKEND = 'frontera.contrib.backends.sqlalchemy.Distributed'
 
 

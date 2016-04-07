@@ -45,7 +45,8 @@ CREATE_ADS_REFER_GRAPH_MYSQL = '''create table if not exists AdsReferGraph (
                                   id int(16) not null primary key auto_increment,
                                   ads_host_domain text,
                                   ads_target_domain text,
-                                  refer_count int(16))
+                                  refer_count int(16),
+                                  is_ads tinyint)
                                   default charset utf8 collate utf8_unicode_ci
                                   '''
 CREATE_TRIGGER_MYSQL = '''
@@ -56,7 +57,7 @@ CREATE_TRIGGER_MYSQL = '''
                           begin
                           set @count = (select count(*) from AdsReferGraph where ads_target_domain = new.ads_target_domain and ads_host_domain = new.ads_host_domain);
                           if @count = 0 then
-                          insert into AdsReferGraph(ads_host_domain,ads_target_domain,refer_count) values(new.ads_host_domain,new.ads_target_domain,1);
+                          insert into AdsReferGraph(ads_host_domain,ads_target_domain,refer_count, is_ads) values(new.ads_host_domain,new.ads_target_domain,1,0);
                           elseif @count>0 then
                           update AdsReferGraph set refer_count = refer_count+1 where ads_target_domain = new.ads_target_domain and ads_host_domain = new.ads_host_domain;
                           end if;

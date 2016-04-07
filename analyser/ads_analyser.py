@@ -2,9 +2,13 @@
 
 
 import io
+import sys
 
 from pylib import db
 from sql_constants import *
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 
 class AdsAnalyser(object):
@@ -44,83 +48,63 @@ class AdsAnalyser(object):
                 simple_rows_list.append(rows[0])
         return simple_rows_list
 
-    def get_all_ads_refer_group(self, ads_target_domain_list):
+    def update_all_ads_refer_group(self, ads_target_domain_list):
         ads_refer_group_list = []
         for domain in ads_target_domain_list:
-            if self.is_ads_refer_group(domain):
-                ads_refer_group_list.append(domain)
-        return ads_refer_group_list
+            self.update_ads_refer_group(domain)
 
-    def is_ads_refer_group(self, domain):
+    def update_ads_refer_group(self, domain):
         assert self.conn is not None
-        ads_refer_group_count = 0
-        ads_refer_count = 0
-        ads_refer_sum = 0
-        if self.conn is not None:
-            try:
-                results = self.conn.Execute(SQL_GET_SUM_OF_ADS_TARGET_BY_DOMAIN,
-                                            {
-                                                'domain': domain
-                                            })
-                ads_refer_group_count = int((results.GetRows()[0])[0])
-            except db.InconsistentResponses:
-                pass
-        if ads_refer_group_count < self.ads_refer_group_count_threshod:
-            return False
-
+        self.reset_ads_refer_group(domain)
         try:
-            results = self.conn.Execute(SQL_GET_SUM_OF_ADS_TARGET_BY_DOMAIN_AND_REFER_COUNT,
+            results = self.conn.Execute(SQL_GET_ADS_TARGET_BY_DOMAIN_AND_REFER_COUNT,
                                         {
                                             'domain': domain,
                                             'count': self.ads_refer_count_threshod
                                         })
-            ads_refer_sum = int((results.GetRows()[0])[0])
+            ads_refer_sum = len(results.GetRows())
+            if ads_refer_sum >= self.ads_refer_group_count_threshod:
+                for row in results.GetRows():
+                    self.set_ads_refer_record_is_ads(row[0], 1)
         except db.InconsistentResponses:
             pass
 
-        return (True if ads_refer_sum >= self.ads_refer_sum_threshod else False)
-
-    def get_all_ads_host(self):
+    def reset_ads_refer_group(self, domain):
         assert self.conn is not None
-        results = None
-        ads_host_rows_list = []
-        if self.conn is not None:
-            try:
-                results = self.conn.Execute(SQL_GET_ALL_ADS_HOST)
-            except InconsistentResponses:
-                pass
-        if results is not None and isinstance(results, db.VirtualTable):
-            rows_list = results.GetRows()
-            for rows in rows_list:
-                ads_host_rows_list.append(rows[0])
-        return ads_host_rows_list
-
-    def get_ads_profile_group(self, ads_host, ads_target_domain):
-        # TODO(yuanbei.clj): add threshold for local select policy
-        rows_list = None
         try:
-            results = self.conn.Execute(SQL_GET_DS_PROFILE_GROUP,
+            results = self.conn.Execute(SQL_GET_ADS_TARGET_BY_DOMAIN,
                                         {
-                                            'ads_host': ads_host,
-                                            'ads_target_domain': ads_target_domain
+                                            'domain': domain
                                         })
-            rows_list = results.GetRows()
+            for row in results.GetRows():
+                self.set_ads_refer_record_is_ads(row[0], 0)
         except db.InconsistentResponses:
             pass
-        return rows_list
 
-    def get_all_ads_refers(self, ads_host_list, ads_refer_group_list):
+    def set_ads_refer_record_is_ads(self, record_id, is_ads):
+        assert self.conn is not None
+        try:
+            results = self.conn.Execute(SQL_SET_ADS_REFER_IS_ADS,
+                                        {
+                                            'id': record_id,
+                                            'is_ads': is_ads
+                                        })
+        except db.InconsistentResponses:
+            pass
+
+    def get_all_ads_refers(self):
         ads_refer_rows = []
-        for ads_host in ads_host_list:
-            for ads_target_domain in ads_refer_group_list:
-                refer_rows = self.get_ads_profile_group(ads_host, ads_target_domain)
-                if refer_rows is not None and len(refer_rows) > 0:
-                    ads_refer_rows.append(refer_rows)
+        assert self.conn is not None
+        try:
+            results = self.conn.Execute(SQL_GET_ALL_ADS_REFERS)
+            ads_refer_rows = results.GetRows()
+        except db.InconsistentResponses:
+            pass
         return ads_refer_rows
 
     def generate_ads_refer_graph_dot_file(self):
         ads_refer_rows = []
-        sql_str = "select * from AdsReferGraph"
+        sql_str = "select * from AdsReferGraph where is_ads = 1"
         dot_data = "digraph AdsReferGraph{ \n"
         dot_data += "%node_defines%"
         node_label_map = {}
@@ -151,7 +135,7 @@ class AdsAnalyser(object):
             node_defines_str += node_define_str
         dot_data = dot_data.replace("%node_defines%", node_defines_str)
         with io.open("ads_refer_graph.dot", 'w') as file_handle:
-            file_handle.write(dot_data)
+            file_handle.write(unicode(dot_data))
 
     def generate_ads_refer_edge(self,
                                 ads_host,
@@ -176,15 +160,11 @@ def main():
     dbspec = 'localhost:adspider:123456:adspider'
     ads_analyser = AdsAnalyser(dbspec, 20, 2, 2)
     ads_analyser.initialize()
-    # domain_list = ads_analyser.get_all_ads_target_domains()
-    # domain_list.sort()
-    # print domain_list
-    # ads_refer_group_list = ads_analyser.get_all_ads_refer_group(domain_list)
-    # print ads_refer_group_list
-    # ads_host_list = ads_analyser.get_all_ads_host()
-    # print ads_host_list
-    # ads_refer_rows = ads_analyser.get_all_ads_refers(ads_host_list, ads_refer_group_list)
-    # print ads_refer_rows
+    domain_list = ads_analyser.get_all_ads_target_domains()
+    domain_list.sort()
+    print domain_list
+    ads_analyser.update_all_ads_refer_group(domain_list)
+    ads_refer_list = ads_analyser.get_all_ads_refers()
     ads_analyser.generate_ads_refer_graph_dot_file()
     ads_analyser.finalize()
 
