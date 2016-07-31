@@ -26,6 +26,7 @@ class SQLiteStorePipeline(object):
         self.conn.execute(INSERT_ITEM_SQLITE,
                           (item['ads_target_url'],
                            item['ads_content_url'],
+                           item['ads_content_frame'],
                            item['ads_present_mode'],
                            item['ads_host'],
                            item['ads_target_domain'],
@@ -69,6 +70,7 @@ class MySQLStorePipeline(object):
                               {
                                   'ads_target_url': item['ads_target_url'],
                                   'ads_content_url': item['ads_content_url'],
+                                  'ads_content_frame': item['ads_content_frame'],
                                   'ads_present_mode': item['ads_present_mode'],
                                   'ads_host': item['ads_host'],
                                   'ads_target_domain': item['ads_target_domain'],

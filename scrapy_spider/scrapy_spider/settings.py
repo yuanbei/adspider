@@ -20,7 +20,7 @@ SPIDER_MODULES = ['scrapy_spider.spiders']
 NEWSPIDER_MODULE = 'scrapy_spider.spiders'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -39,19 +39,38 @@ SPIDER_MIDDLEWARES.update({
     'scrapy.spidermiddleware.urllength.UrlLengthMiddleware': None
 })
 
+DOWNLOADER_MIDDLEWARES = {
+    # Engine side
+    'scrapy_splash.SplashCookiesMiddleware': 723,
+    'scrapy_splash.SplashMiddleware': 725,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+    # Downloader side
+}
+
 DOWNLOADER_MIDDLEWARES.update({
+    # Frontera
     'frontera.contrib.scrapy.middlewares.schedulers.SchedulerDownloaderMiddleware': 1000,
 })
 
 SCHEDULER = 'frontera.contrib.scrapy.schedulers.frontier.FronteraScheduler'
 SPIDER_MIDDLEWARES.update({
-    'frontera.contrib.scrapy.middlewares.seeds.file.FileSeedLoader': 1,
+    'scrapy_spider.spider_middlewares.file_seed_loader.SplashFileSeedLoader': 1,
 })
+
+#DOWNLOAD_HANDLERS = {
+#    'http': 'scrapy_splash.HTTPDownloadHandler',
+#    'https': 'scrapy_splash.HTTPDownloadHandler',
+#}
+
+# Splash Settings
+SPLASH_URL = 'http://localhost:8050/'
+DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 
 HTTPCACHE_ENABLED = False
 REDIRECT_ENABLED = True
 COOKIES_ENABLED = False
-DOWNLOAD_TIMEOUT = 240
+DOWNLOAD_TIMEOUT = 3600
 RETRY_ENABLED = False
 DOWNLOAD_MAXSIZE = 1 * 1024 * 1024
 
@@ -63,8 +82,8 @@ AUTOTHROTTLE_START_DELAY = 0.25
 RANDOMIZE_DOWNLOAD_DELAY = False
 
 # concurrency
-CONCURRENT_REQUESTS = 64
-CONCURRENT_REQUESTS_PER_DOMAIN = 10
+CONCURRENT_REQUESTS = 512
+CONCURRENT_REQUESTS_PER_DOMAIN = 100
 
 LOG_LEVEL = 'DEBUG'
 

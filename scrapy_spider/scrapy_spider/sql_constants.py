@@ -5,19 +5,22 @@
 INSERT_ITEM_SQLITE = '''INSERT INTO AdsProfile
                      (ads_target_url,
                       ads_content_url,
+                      ads_content_frame,
                       ads_present_mode,
                       ads_host,
                       ads_target_domain,
-                      ads_host_domain) VALUES(?,?,?,?,?,?)'''
+                      ads_host_domain) VALUES(?,?,?,?,?,?,?)'''
 INSERT_ITEM_MYSQL = '''INSERT INTO AdsProfile
                            (ads_target_url,
                             ads_content_url,
+                            ads_content_frame,
                             ads_present_mode,
                             ads_host,
                             ads_target_domain,
                             ads_host_domain)
                             VALUES(%(ads_target_url)s,
                                    %(ads_content_url)s,
+                                   %(ads_content_frame)s,
                                    %(ads_present_mode)s,
                                    %(ads_host)s,
                                    %(ads_target_domain)s,
@@ -26,6 +29,7 @@ CREATE_ADS_PROFILE_TABLE_SQLITE = '''CREATE TABLE IF NOT EXISTS AdsProfile (
                                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                                   ads_target_url TEXT,
                                   ads_content_url TEXT,
+                                  ads_content_frame TEXT,
                                   ads_present_mode TEXT,
                                   ads_host TEXT,
                                   ads_target_domain TEXT,
@@ -35,6 +39,7 @@ CREATE_ADS_PROFILE_TABLE_MYSQL = '''create table if not exists AdsProfile (
                                   id int(16) not null primary key auto_increment,
                                   ads_target_url text,
                                   ads_content_url text,
+                                  ads_content_frame text,
                                   ads_present_mode text,
                                   ads_host text,
                                   ads_target_domain text,

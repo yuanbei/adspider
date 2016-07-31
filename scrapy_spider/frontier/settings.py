@@ -2,7 +2,7 @@ from frontera.settings.default_settings import MIDDLEWARES
 
 SPIDER_PARTITION_ID = 0
 MAX_NEXT_REQUESTS = 512
-MAX_REQUESTS = 100
+MAX_REQUESTS = 10
 DELAY_ON_EMPTY = 5.0
 
 MIDDLEWARES.extend([

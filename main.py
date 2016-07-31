@@ -6,6 +6,8 @@ import subprocess
 import sys
 
 from tld.utils import update_tld_names
+from pudb import set_trace
+set_trace()
 
 
 def ensure_dependencies():
