@@ -2,19 +2,16 @@
 import io
 import random
 import scrapy
-from scrapy.http import Response, TextResponse
 
+from scrapy.http import Response, TextResponse
 from scrapy.linkextractors import LinkExtractor
 from scrapy_spider.items import AdsProfileItem
+from scrapy_spider.utils.user_agent_generater import UserAgentGenerater
 from scrapy_splash import SlotPolicy
-from scrapy_splash import SplashRequest
 from scrapy_splash import SplashJsonResponse
+from scrapy_splash import SplashRequest
 from tld import get_tld
 from urlparse import urljoin, urlparse
-from scrapy_spider.utils.user_agent_generater import UserAgentGenerater
-
-from pudb import set_trace
-set_trace()
 
 
 class AdsProfileSpider(scrapy.Spider):
@@ -53,7 +50,6 @@ class AdsProfileSpider(scrapy.Spider):
         frames = []
         for child_frame in child_frames:
             sub_frames = self._get_child_frames(child_frame)
-            print "Get %s sub frames from %s" %(len(sub_frames), splash_json_response.url)
             frames.extend(sub_frames)
         return frames
 
@@ -61,12 +57,10 @@ class AdsProfileSpider(scrapy.Spider):
         frames = []
         frame_response = TextResponse(child_frame['requestedUrl'],
                                       body=child_frame['html'].encode('utf8'))
-        print "Frame %s " % frame_response
         frames.append(frame_response)
         child_frames = child_frame['childFrames']
         for the_child in child_frames:
             sub_frames = self._get_child_frames(the_child)
-            print "Get %s sub frames from %s" %(len(sub_frames), frame_response.url)
             frames.extend(sub_frames)
         return frames
 
@@ -118,8 +112,10 @@ class AdsProfileSpider(scrapy.Spider):
                             ads_link.xpath('img/@src').extract_first())
                         ads_profile["ads_content_url"] = img_src
                         ads_profile["ads_content_frame"] = frame_response.url
-                        ads_profile['ads_host_domain'] = urlparse(response.url).netloc
-                        ads_profile['ads_target_domain'] = urlparse(link_href).netloc
+                        ads_profile['ads_host_domain'] =\
+                            urlparse(response.url).netloc
+                        ads_profile['ads_target_domain'] =\
+                            urlparse(link_href).netloc
                         yield ads_profile
 
         link_extractor = LinkExtractor()

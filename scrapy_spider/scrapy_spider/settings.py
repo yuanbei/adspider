@@ -2,13 +2,6 @@
 
 # Scrapy settings for scrapy_spider project
 #
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     http://doc.scrapy.org/en/latest/topics/settings.html
-#     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
-
 from scrapy.settings.default_settings import SPIDER_MIDDLEWARES, DOWNLOADER_MIDDLEWARES
 from frontera.settings.default_settings import MIDDLEWARES
 
@@ -57,7 +50,7 @@ SPIDER_MIDDLEWARES.update({
     'scrapy_spider.spider_middlewares.file_seed_loader.SplashFileSeedLoader': 1,
 })
 
-#DOWNLOAD_HANDLERS = {
+# DOWNLOAD_HANDLERS = {
 #    'http': 'scrapy_splash.HTTPDownloadHandler',
 #    'https': 'scrapy_splash.HTTPDownloadHandler',
 #}

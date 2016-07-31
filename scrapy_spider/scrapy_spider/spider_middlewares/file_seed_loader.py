@@ -1,11 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from frontera.contrib.scrapy.middlewares.seeds.file import FileSeedLoader
 from scrapy_splash import SlotPolicy
 from scrapy_splash import SplashRequest
 from scrapy_spider.utils.user_agent_generater import UserAgentGenerater
-
-
-from pudb import set_trace
-set_trace()
 
 
 class SplashFileSeedLoader(FileSeedLoader):
